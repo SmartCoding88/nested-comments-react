@@ -13,9 +13,10 @@
     <p>Create a file "seed.js" inside prisma folder</p>
     <p>Add the following section to package.json</p>
     <pre>
-        "prisma": {
-            "seed": "node prisma/seed.js"
-        },
+    "type": "module",
+    "prisma": {
+        "seed": "node prisma/seed.js"
+    }
     </pre>
     <p>RUN: npx prisma db seed</p>
     </li>
