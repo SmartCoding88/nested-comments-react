@@ -18,6 +18,8 @@
     </pre>
     <p>RUN: npx prisma db seed</p>
     </li>
-    <li>We will use<b> FESTIFY instead of Express since it is simpler for creating APIs</b> 
+    <li>We will use<b> FASTIFY</b>  instead of Express since it is simpler for creating APIs <br/>
     > npm i fastify dotenv @fastify/cookie @fastify/cors @fastify/sensible
+    </li>
+    <li>npm i axios</li>
 </ol>
