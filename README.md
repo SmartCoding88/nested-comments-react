@@ -6,16 +6,16 @@
     <li>npm i @prisma/client</li>
     <li>npx prisma init</li>
     <li>Fill in prisma->prisma.prisma file with models and run the following command to generate the tables in DB: <br>
-        <pre>>npx prisma generate</pre>
+        <pre>npx prisma generate</pre>
     </li>
     <li>
-        <p>Create a file "seed.js" inside prisma folder</p>
-        <p>Add the following section to package.json</p>
-        <pre>
-            "prisma": {
-                "seed": "node prisma/seed.js"
-            },
-        </pre>
-        <p>RUN: npx prisma db seed</p>
+    <p>Create a file "seed.js" inside prisma folder</p>
+    <p>Add the following section to package.json</p>
+    <pre>
+        "prisma": {
+            "seed": "node prisma/seed.js"
+        },
+    </pre>
+    <p>RUN: npx prisma db seed</p>
     </li>
 </ol>
