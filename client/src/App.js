@@ -1,8 +1,9 @@
 import './App.css';
+import { PostList } from './components/PostList';
 
 function App() {
   return (
-    <h1>The Client</h1>
+    <PostList></PostList>
   );
 }
 
