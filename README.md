@@ -29,4 +29,5 @@
 <ol>
 <li>CD into the client folder and run npx create-react-app . to create a new React application</li>
 <li>Install axios: npm i axios</li>
+<li>npm i react-router-dom react-icons</li>
 </ol>

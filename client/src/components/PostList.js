@@ -8,7 +8,8 @@ export function PostList(){
 
         getPosts().then(setPosts)
 
-    }, [])
+    }, []);
+
     return posts.map(post=>{
         return (
             <h1 key={post.id}>
