@@ -14,11 +14,40 @@ app.register(cors,{
 })
 const prisma = new PrismaClient()
 
+//get posts
 app.get("/posts", async (req, res)=>{
     return await commitToDb(prisma.post.findMany({
        select:{
         id: true,
         title: true
+       }
+    }))
+})
+
+//get post by Id
+app.get("/posts/:id", async (req, res)=>{
+    return await commitToDb(prisma.post.findUnique({
+       where: {id: req.params.id},
+       select:{
+        body: true,
+        title: true, comments:{
+            orderBy:{
+                createdAt: "desc"
+            },
+            select:{
+                id: true,
+                message: true, 
+                parentId: true, 
+                createdAt: true,
+                user:{
+                    select:{
+                        id: true, 
+                        name: true
+                    }
+                }
+
+            }
+        }
        }
     }))
 })
