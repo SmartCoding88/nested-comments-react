@@ -1,8 +1,18 @@
 import './App.css';
+import { PostList } from './components/PostList';
+import { Routes, Route } from "react-router-dom";
+import { Post } from './components/Post';
+import { PostProvider } from './contexts/PostContext';
+
 
 function App() {
   return (
-    <h1>The Client</h1>
+    <div className='container'>
+      <Routes>
+        <Route path="/" element={<PostList />}/>
+        <Route path="/posts/:id" element={<PostProvider><Post /></PostProvider>} />
+      </Routes>
+    </div>
   );
 }
 
