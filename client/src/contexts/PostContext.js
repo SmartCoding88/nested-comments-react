@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react"
+import React, { useContext, useMemo, useState, useEffect } from "react"
 import { getPost } from "../services/posts"
 import { useAsync } from "../hooks/useAsync"
 import { useParams } from "react-router-dom"
@@ -17,7 +17,9 @@ export function PostProvider({children}) {
     const { id } = useParams()
 
     const {loading, error, value: post } = useAsync(()=>getPost(id),[id])
-    console.log(post)
+    //console.log(post)
+
+    const [comments, setComments] = useState([])
 
     //regroup comments by parent Id to be nested
     const commentsByParentId = useMemo(()=>{
@@ -26,17 +28,28 @@ export function PostProvider({children}) {
 
         const group ={}
 
-        post.comments.forEach(comment => {
+        comments.forEach(comment => {
             group[comment.parentId] ||=[]
             group[comment.parentId].push(comment)
             
         });
 
         return group;
+    }, [comments])
+
+    useEffect(()=>{
+        if(post?.comments == null) return
+        setComments(post.comments)
     }, [post?.comments])
 
     function getReplies(parentId){
         return commentsByParentId[parentId]
+    }
+
+    function createLocalComment(comment){
+        setComments(prevComments=>{
+            return [comment, ...prevComments] //add the new comment to the top of the comments array
+        })
     }
 
     return (
@@ -44,6 +57,7 @@ export function PostProvider({children}) {
         post: {id, ...post},
         rootComments: commentsByParentId[null],
         getReplies,
+        createLocalComment
     }}>
 
         {loading? (
