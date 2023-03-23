@@ -32,7 +32,7 @@ app.addHook("onRequest", (req, res, done) => {
 const prisma = new PrismaClient()
 const CURRENT_USER_ID = (await prisma.user.findFirst({
     where: {
-        name: "Sally"
+        name: "Kyle"
     }
 })).id
 //console.log(CURRENT_USER_ID)
