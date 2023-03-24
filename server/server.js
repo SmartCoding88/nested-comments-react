@@ -63,45 +63,45 @@ app.get("/posts", async (req, res) => {
 //get post by Id
 app.get("/posts/:id", async (req, res) => {
     return await commitToDb(
-      prisma.post
-        .findUnique({
-          where: { id: req.params.id },
-          select: {
-            body: true,
-            title: true,
-            comments: {
-              orderBy: {
-                createdAt: "desc",
-              },
-              select: {
-                ...COMMENT_SELECT_FIELDS,
-                _count: { select: { likes: true } },
-              },
-            },
-          },
-        })
-        .then(async post => {
-          const likes = await prisma.like.findMany({
-            where: {
-              userId: req.cookies.userId,
-              commentId: { in: post.comments.map(comment => comment.id) },
-            },
-          })
-  
-          return {
-            ...post,
-            comments: post.comments.map(comment => {
-              const { _count, ...commentFields } = comment
-              return {
-                ...commentFields,
-                likedByMe: likes.find(like => like.commentId === comment.id),
-                likeCount: _count.likes,
-              }
-            }),
-          }
-        })
+        prisma.post
+            .findUnique({
+                where: { id: req.params.id },
+                select: {
+                    body: true,
+                    title: true,
+                    comments: {
+                        orderBy: {
+                            createdAt: "desc",
+                        },
+                        select: {
+                            ...COMMENT_SELECT_FIELDS,
+                            _count: { select: { likes: true } },
+                        },
+                    },
+                },
+            })
+            .then(async post => {
+                const likes = await prisma.like.findMany({
+                    where: {
+                        userId: req.cookies.userId,
+                        commentId: { in: post.comments.map(comment => comment.id) },
+                    },
+                })
+
+                return {
+                    ...post,
+                    comments: post.comments.map(comment => {
+                        const { _count, ...commentFields } = comment
+                        return {
+                            ...commentFields,
+                            likedByMe: likes.find(like => like.commentId === comment.id),
+                            likeCount: _count.likes,
+                        }
+                    }),
+                }
+            })
     )
-  })
+})
 
 //add Comment
 app.post("/posts/:id/comments", async (req, res) => {
@@ -121,13 +121,13 @@ app.post("/posts/:id/comments", async (req, res) => {
             },
             select: COMMENT_SELECT_FIELDS
         })
-        .then(comment=>{
-            return {
-                ...comment,
-                likeCount:0,
-                likedByMe: false
-            }
-        })
+            .then(comment => {
+                return {
+                    ...comment,
+                    likeCount: 0,
+                    likedByMe: false
+                }
+            })
     )
 
 })
@@ -183,6 +183,37 @@ app.delete("/posts/:postId/comments/:commentId", async (req, res) => {
         })
     )
 })
+
+
+//toggle likes
+app.post("/posts/:postId/comments/:commentId/toggleLike", async (req, res) => {
+    const data = {
+        commentId: req.params.commentId,
+        userId: req.cookies.userId,
+    }
+
+    const like = await prisma.like.findFirst({
+        where: { commentId: req.params.commentId },
+    })
+
+    if (like == null) {
+        return await commitToDb(prisma.like.create({ data })).then(() => {
+            return { addLike: true }
+        })
+    } else {
+        return await commitToDb(
+            prisma.like.delete({
+                where: {
+                    commentId: req.params.commentId,
+                    userId: req.cookies.userId
+                }
+            })
+        ).then(() => {
+            return { addLike: false }
+        })
+    }
+})
+
 
 
 //error handling helper function
