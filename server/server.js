@@ -98,6 +98,37 @@ app.post("/posts/:id/comments", async (req, res) => {
 
 })
 
+//Update a comment
+app.put("/posts/:postId/comments/:commentId", async (req, res)=>{
+    console.log(req.body)
+    if (req.body.message === "" || req.body.message == null) {
+        return res.send(app.httpErrors.badRequest("Message is required"));
+    }
+
+    //check for permission (user owns the comment)
+
+    const {userId} = await prisma.comment.findUnique({
+        where:{id: req.params.commentId},
+        select: {userId: true}
+    })
+
+    if(userId !== req.cookies.userId){
+        return res.send(
+            app.httpErrors.unauthorized(
+                "You don't have permission to edit this comment !!"
+            )
+        )
+    }
+
+    //if everything is OK => proceed to update
+
+    return await commitToDb(prisma.comment.update({
+        where: {id: req.params.commentId},
+        data: { message: req.body.message },
+        select: { message: true }
+    }))
+})
+
 //error handling helper function
 async function commitToDb(promise) {
     const [error, data] = await app.to(promise)

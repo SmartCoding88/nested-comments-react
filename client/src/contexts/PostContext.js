@@ -51,13 +51,25 @@ export function PostProvider({children}) {
             return [comment, ...prevComments] //add the new comment to the top of the comments array
         })
     }
+    function updateLocalComment(id, message) {
+        setComments(prevComments => {
+          return prevComments.map(comment => {
+            if (comment.id === id) {
+              return { ...comment, message }
+            } else {
+              return comment
+            }
+          })
+        })
+      }
 
     return (
     <Context.Provider value={{
         post: {id, ...post},
         rootComments: commentsByParentId[null],
         getReplies,
-        createLocalComment
+        createLocalComment,
+        updateLocalComment
     }}>
 
         {loading? (
